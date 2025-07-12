@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Black Bloom</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000000;
+      color: #fcfcfc;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    /* Inverted Image CSS */
+    img.logo {
+      width: 120px;
+      height: auto;
+      margin-bottom: 15px;
+      filter: invert(1) grayscale(1) contrast(1) brightness(2);
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin: 0 0 10px 0;
+      text-shadow: 0 0 10px #ffffff30;
+    }
+
+    p {
+      font-size: 15px;
+      margin-top: 0;
+      margin-bottom: 30px;
+      color: #aaaaaa;
+      text-shadow: 0 0 1px;
+    }
+
+    .search-bar {
+      display: flex;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 30px;
+    }
+
+    .search-bar input[type="text"] {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 14px;
+      border: 1px solid #fcfcfc;
+      background-color: #111;
+      color: #fcfcfc;
+      outline: none;
+      border-radius: 8px 0 0 8px;
+    }
+
+    .search-bar button {
+      padding: 12px 20px;
+      font-size: 14px;
+      background-color: #fcfcfc;
+      color: #000000;
+      border: 1px solid #fcfcfc;
+      border-left: none;
+      cursor: pointer;
+      border-radius: 0 8px 8px 0;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .search-bar button:hover {
+      background-color: #ffffff10;
+      color: #ffffff;
+    }
+
+    .bookmarks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .bookmark {
+      padding: 14px 24px;
+      background: #fcfcfc;
+      border: 1px double #fcfcfc;
+      color: #000000;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 9px;
+      transition: background-color 0.3s, color 0.3s, transform 0.2s;
+      text-decoration: none;
+      position: relative;
+    }
+
+    .bookmark:hover {
+      background-color: #ffffff10;
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .menu-btn {
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 18px;
+      color: #333;
+      display: none;
+    }
+
+    .bookmark:hover .menu-btn {
+      display: block;
+    }
+
+    .menu {
+      display: none;
+      position: absolute;
+      top: 30px;
+      right: 0;
+      background-color: #333;
+      color: #fff;
+      padding: 5px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .menu-btn:hover + .menu,
+    .menu:hover {
+      display: block;
+    }
+
+    .menu button {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 8px;
+      width: 100%;
+      text-align: left;
+      transition: background-color 0.3s;
+    }
+
+    .menu button:hover {
+      background-color: #555;
+    }
+
+    .add-bookmark-btn {
+      padding: 10px 20px;
+      background: #B00020;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .add-bookmark-btn:hover {
+      background-color: #ff4040;
+    }
+
+    @media screen and (max-width: 600px) {
+      .bookmark {
+        min-width: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- The logo image path has been updated to point to your image file -->
+  <img class="logo" src="Screenshot_2025-07-12_14-45-15.png" alt="Black Bloom" />
+
+  <h1>Black Shores</h1>
+  <p>To the path of shores</p>
+
+  <form class="search-bar" action="https://www.google.com/search" method="GET" target="_blank">
+    <input type="text" name="q" list="suggestions" placeholder="Search the shadows..." />
+    <button type="submit">Search</button>
+    <datalist id="suggestions">
+      <option value="floorp browser">
+      <option value="css button effects">
+      <option value="dark mode html template">
+      <option value="black wallpaper 4k">
+      <option value="how to focus better">
+    </datalist>
+  </form>
+
+  <div class="bookmarks" id="bookmark-container"></div>
+
+  <div id="add-bookmark-btn-container" style="display: block;">
+    <button class="add-bookmark-btn" onclick="addBookmark()">Add Bookmark</button>
+  </div>
+
+  <script>
+    const bookmarkContainer = document.getElementById("bookmark-container");
+    const addBookmarkBtnContainer = document.getElementById("add-bookmark-btn-container");
+    let bookmarks = [
+      { title: "YouTube", url: "https://youtube.com" },
+      { title: "Reddit", url: "https://reddit.com" },
+      { title: "Mail", url: "https://mail.proton.me" },
+      { title: "ChatGPT", url: "https://chat.openai.com" },
+      { title: "GitHub", url: "https://github.com" }
+    ];
+
+    function displayBookmarks() {
+      bookmarkContainer.innerHTML = "";
+      bookmarks.forEach((bookmark, index) => {
+        const bookmarkElement = document.createElement("a");
+        bookmarkElement.classList.add("bookmark");
+        bookmarkElement.href = bookmark.url;
+        bookmarkElement.target = "_blank";
+        bookmarkElement.innerHTML = bookmark.title;
+
+        const menuBtn = document.createElement("span");
+        menuBtn.classList.add("menu-btn");
+        menuBtn.innerHTML = "&#x2022;&#x2022;&#x2022;";
+
+        const menu = document.createElement("div");
+        menu.classList.add("menu");
+
+        const editBtn = document.createElement("button");
+        editBtn.innerHTML = "Edit";
+        editBtn.onclick = (e) => { e.stopPropagation(); editBookmark(index); };
+
+        const removeBtn = document.createElement("button");
+        removeBtn.innerHTML = "Remove";
+        removeBtn.onclick = (e) => { e.stopPropagation(); removeBookmark(index); };
+
+        menu.appendChild(editBtn);
+        menu.appendChild(removeBtn);
+
+        bookmarkElement.appendChild(menuBtn);
+        bookmarkElement.appendChild(menu);
+        bookmarkContainer.appendChild(bookmarkElement);
+      });
+
+      if (bookmarks.length >= 6) {
+        addBookmarkBtnContainer.style.display = "none";
+      } else {
+        addBookmarkBtnContainer.style.display = "block";
+      }
+    }
+
+    function addBookmark() {
+      if (bookmarks.length < 6) {
+        const title = prompt("Enter bookmark title:");
+        const url = prompt("Enter bookmark URL:");
+        if (title && url) {
+          bookmarks.push({ title, url });
+          displayBookmarks();
+        }
+      }
+    }
+
+    function editBookmark(index) {
+      const newTitle = prompt("Edit bookmark title:", bookmarks[index].title);
+      const newUrl = prompt("Edit bookmark URL:", bookmarks[index].url);
+      if (newTitle && newUrl) {
+        bookmarks[index] = { title: newTitle, url: newUrl };
+        displayBookmarks();
+      }
+    }
+
+    function removeBookmark(index) {
+      bookmarks.splice(index, 1);
+      displayBookmarks();
+    }
+
+    displayBookmarks();
+  </script>
+</body>
+</html>
